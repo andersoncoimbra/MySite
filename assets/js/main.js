@@ -266,4 +266,10 @@
    */
   new PureCounter();
 
+  /**
+   * Atualizar o ano automaticamente
+   */
+  const ano = document.querySelector('#year');
+  ano.innerHTML = new Date().getFullYear();
+
 })()
