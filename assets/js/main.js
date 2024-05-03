@@ -7,6 +7,9 @@
 (function() {
   "use strict";
 
+  //altera o lang
+  document.documentElement.lang = getParameterByName('lang');
+
   /**
    * Easy selector helper function
    */
@@ -271,5 +274,55 @@
    */
   const ano = document.querySelector('#year');
   ano.innerHTML = new Date().getFullYear();
+
+  /**
+   * Language
+   */
+
+  //função que recupera o parametro da url
+  // Função para obter parâmetros da URL
+  function getParameterByName(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, '\\$&');
+      var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+          results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  }
+
+  let lang = getParameterByName('lang');
+  let langStorage = localStorage.getItem('language');
+  // verifica se tem o localstorage e se tem a linguagem
+  if (lang != null){
+    // atualiza o localstorage com a linguagem da url
+    localStorage.setItem('language', lang);
+  }else if(langStorage != null && (lang === null || lang === '')) {
+    // atualiza a url com o parametro da linguagem
+    window.location.href = window.location.href.split('?')[0] + '?lang=' + langStorage;    
+  } else if (!langStorage){
+    // redireciona para a url select_language.html
+    window.location.href = 'select_language.html';    
+  }
+
+  //rastrei o arquivo de lang e substitui o texto do elemento body
+  if(lang && lang !== "en"){
+    fetch('assets/lang/' + lang + '.json')
+    .then(response => response.json())
+    .then(data => {     
+
+      
+      let elementos = document.querySelectorAll('*');
+      let keys = Object.keys(data);
+
+      keys.forEach(element => {
+        for(let i = 0; i < elementos.length; i++){
+          if(elementos[i].textContent === element){
+            elementos[i].textContent = data[element];
+          }
+        }        
+      });
+    });
+  }
 
 })()
