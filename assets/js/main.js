@@ -145,13 +145,38 @@
   if (typed) {
     let typed_strings = typed.getAttribute('data-typed-items')
     typed_strings = typed_strings.split(',')
-    new Typed('.typed', {
-      strings: typed_strings,
-      loop: true,
-      typeSpeed: 100,
-      backSpeed: 50,
-      backDelay: 2000
-    });
+    let translate = typed.getAttribute('translate');
+    if(translate === 'yes'){
+      fetch('assets/lang/' + getParameterByName('lang') + '.json')
+      .then(response => response.json())
+      .then(data => {
+        let typed_strings_translated = [];
+        typed_strings.forEach(element => {
+          element = element.trim();
+          if(data[element]){
+            typed_strings_translated.push(data[element]);
+          }else{
+            typed_strings_translated.push(element);
+          }
+        });
+        typed_strings = typed_strings_translated;
+        new Typed('.typed', {
+          strings: typed_strings,
+          loop: true,
+          typeSpeed: 100,
+          backSpeed: 50,
+          backDelay: 2000
+        });
+      });
+    }else{
+      new Typed('.typed', {
+        strings: typed_strings,
+        loop: true,
+        typeSpeed: 100,
+        backSpeed: 50,
+        backDelay: 2000
+      });
+    }
   }
 
   /**
@@ -318,6 +343,9 @@
       keys.forEach(element => {
         for(let i = 0; i < elementos.length; i++){
           if(elementos[i].textContent === element){
+            elementos[i].textContent = data[element];
+          }
+          if(elementos[i].getAttribute('data-key-translate') === element){
             elementos[i].textContent = data[element];
           }
         }        
