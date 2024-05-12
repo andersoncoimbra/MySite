@@ -146,7 +146,7 @@
     let typed_strings = typed.getAttribute('data-typed-items')
     typed_strings = typed_strings.split(',')
     let translate = typed.getAttribute('translate');
-    if(translate === 'yes'){
+    if(translate === 'yes' && getParameterByName('lang') !== "en"){
       fetch('assets/lang/' + getParameterByName('lang') + '.json')
       .then(response => response.json())
       .then(data => {
